@@ -7,9 +7,14 @@ from sqlalchemy import text
 from prometheus_fastapi_instrumentator import Instrumentator
 import redis
 
-from database import get_db
+from app.database import get_db
 
 app = FastAPI(title="Order Management SRE Service", version="1.0.0")
+
+from app.database import Base, engine
+
+# Yeh line database ke andar saari missing tables physical roop se create karti hai:
+Base.metadata.create_all(bind=engine)
 
 # SRE Observability: Expose /metrics
 Instrumentator().instrument(app).expose(app)
